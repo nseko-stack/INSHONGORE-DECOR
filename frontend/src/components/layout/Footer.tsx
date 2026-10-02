@@ -67,7 +67,7 @@ export default function Footer({ isDark = false }: FooterProps) {
               </a>
             </li>
             <li>
-              <a href="tel:+250788282693" className={`transition ${theme.link}`}>
+              <a href="tel:+250788282693" title="how can we help you?" className={`transition ${theme.link}`}>
                 +250788282693
               </a>
             </li>
