@@ -83,8 +83,8 @@ export default function Footer({ isDark = false }: FooterProps) {
             Follow our latest work and get in touch about your event.
           </p>
           <a
-            href="https://wa.me/250788282693"
-            target="how can we help you?"
+            href="https://wa.me/250788282693?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20services"
+            target="_blank"
             rel="noreferrer"
             className={`mt-4 inline-flex border border-[#D4AF37]/50 px-4 py-2 text-xs uppercase tracking-[0.14em] transition hover:border-[#D4AF37] hover:text-[#D4AF37] ${theme.link}`}
           >
