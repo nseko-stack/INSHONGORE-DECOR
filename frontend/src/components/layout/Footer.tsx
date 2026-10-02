@@ -67,8 +67,8 @@ export default function Footer({ isDark = false }: FooterProps) {
               </a>
             </li>
             <li>
-              <a href="tel:+250788000000" className={`transition ${theme.link}`}>
-                +250 788 000 000
+              <a href="tel:+250788282693" className={`transition ${theme.link}`}>
+                +250788282693
               </a>
             </li>
             <li className={theme.muted}>Kigali, Rwanda</li>
@@ -83,7 +83,7 @@ export default function Footer({ isDark = false }: FooterProps) {
             Follow our latest work and get in touch about your event.
           </p>
           <a
-            href="https://wa.me/250788000000"
+            href="https://wa.me/250788282693"
             target="_blank"
             rel="noreferrer"
             className={`mt-4 inline-flex border border-[#D4AF37]/50 px-4 py-2 text-xs uppercase tracking-[0.14em] transition hover:border-[#D4AF37] hover:text-[#D4AF37] ${theme.link}`}
