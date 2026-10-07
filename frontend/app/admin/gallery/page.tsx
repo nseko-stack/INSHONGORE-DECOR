@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
 import GalleryGrid from "@/src/components/admin/gallery/GalleryGrid";
 import GalleryUpload from "@/src/components/admin/gallery/GalleryUpload";
-import { handleBuildComplete } from "next/dist/build/adapter/build-complete";
 
 interface ApiGalleryItem {
   id: number;
@@ -55,7 +54,7 @@ export default function AdminGalleryPage() {
   const [selectedGalleryItem, setSelectedGalleryItem] =
     useState<GalleryItem | null>(null);
 
-  async function fetchGallery() {
+  const fetchGallery = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -120,11 +119,12 @@ export default function AdminGalleryPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    fetchGallery();
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchGallery();
+  }, [fetchGallery]);
 
   function handleUploadSuccess() {
     setShowUpload(false);

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
 
@@ -122,7 +122,7 @@ export default function MessagesPage() {
   const [deletingId, setDeletingId] =
     useState<number | null>(null);
 
-  async function fetchMessages() {
+  const fetchMessages = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -168,11 +168,12 @@ export default function MessagesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
 
   useEffect(() => {
-    fetchMessages();
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchMessages();
+  }, [fetchMessages]);
 
   const filteredMessages = useMemo(() => {
     const query =

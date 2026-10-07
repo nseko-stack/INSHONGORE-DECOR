@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { galleryItems as fallbackGalleryItems } from "@/src/content/siteContent";
+
 type GalleryItem = {
   id: number;
   title: string;
@@ -14,6 +16,16 @@ type GalleryItem = {
   is_featured: boolean;
   is_active: boolean;
 };
+
+const fallbackGalleryData: GalleryItem[] = fallbackGalleryItems.map((item, index) => ({
+  id: index + 1,
+  title: item.title,
+  description: item.alt,
+  image_url: item.image,
+  category: "Featured",
+  is_featured: true,
+  is_active: true,
+}));
 
 type GalleryPreviewProps = {
   isDark?: boolean;
@@ -42,14 +54,11 @@ export default function GalleryPreview({
           );
         }
 
-        setGalleryItems(
-          data.gallery ?? data.data ?? []
-        );
+        const fetchedGalleryItems = data.gallery ?? data.data ?? fallbackGalleryData;
+        setGalleryItems(fetchedGalleryItems);
       } catch (error) {
-        console.error(
-          "Failed to fetch gallery:",
-          error
-        );
+        console.warn("Using fallback gallery data:", error);
+        setGalleryItems(fallbackGalleryData);
       } finally {
         setLoading(false);
       }

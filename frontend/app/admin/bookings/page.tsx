@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
@@ -74,6 +75,8 @@ function formatDate(date: string) {
 }
 
 export default function BookingsPage() {
+  const router = useRouter();
+
   const [bookings, setBookings] = useState<Booking[]>(
     []
   );
@@ -90,14 +93,7 @@ export default function BookingsPage() {
 
   const [error, setError] = useState("");
 
-  const [updatingId, setUpdatingId] =
-    useState<number | null>(null);
-
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
-  async function fetchBookings() {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -110,7 +106,7 @@ export default function BookingsPage() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/admin/login";
+        router.push("/admin/login");
         return;
       }
 
@@ -159,7 +155,12 @@ export default function BookingsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchBookings();
+  }, [fetchBookings]);
 
   const filteredBookings = useMemo(() => {
     return bookings.filter((booking) => {
@@ -203,7 +204,6 @@ export default function BookingsPage() {
     };
 
     try {
-      setUpdatingId(id);
       setError("");
 
       const response = await fetch(
@@ -221,7 +221,7 @@ export default function BookingsPage() {
       );
 
       if (response.status === 401) {
-        window.location.href = "/admin/login";
+        router.push("/admin/login");
         return;
       }
 
@@ -266,8 +266,6 @@ export default function BookingsPage() {
           ? error.message
           : "Failed to update booking status"
       );
-    } finally {
-      setUpdatingId(null);
     }
   }
 

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
@@ -71,7 +71,7 @@ export default function AdminServicesPage() {
   /*
    * Load services from the backend.
    */
-  async function fetchServices() {
+  const fetchServices = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -146,14 +146,15 @@ export default function AdminServicesPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   /*
    * Load services when the page opens.
    */
   useEffect(() => {
-    fetchServices();
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchServices();
+  }, [fetchServices]);
 
   /*
    * Open the form for creating a new service.

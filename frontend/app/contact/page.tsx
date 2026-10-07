@@ -83,6 +83,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#F4EEE7] text-[#171717]">
       <Navbar />
+      <div aria-hidden="true" className="h-[3.75rem] sm:h-16 lg:h-[4.5rem]" />
       <main>
         <div className="mx-auto max-w-5xl px-4 py-24 sm:px-6 lg:px-10">
         {/* Header */}

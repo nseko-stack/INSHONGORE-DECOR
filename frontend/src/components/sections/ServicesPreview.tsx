@@ -4,6 +4,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { services as fallbackServices } from "@/src/content/siteContent";
+
 type Service = {
   id: number;
   name: string;
@@ -12,6 +14,15 @@ type Service = {
   price: string;
   is_active: boolean;
 };
+
+const fallbackServiceData: Service[] = fallbackServices.map((service, index) => ({
+  id: index + 1,
+  name: service.title,
+  category: "Featured",
+  description: service.description,
+  price: "Custom",
+  is_active: true,
+}));
 
 type ServicesPreviewProps = {
   isDark?: boolean;
@@ -40,14 +51,11 @@ export default function ServicesPreview({
           );
         }
 
-        setServices(
-          data.services ?? data.data ?? []
-        );
+        const fetchedServices = data.services ?? data.data ?? fallbackServiceData;
+        setServices(fetchedServices);
       } catch (error) {
-        console.error(
-          "Failed to fetch services:",
-          error
-        );
+        console.warn("Using fallback services data:", error);
+        setServices(fallbackServiceData);
       } finally {
         setLoading(false);
       }

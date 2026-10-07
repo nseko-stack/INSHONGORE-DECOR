@@ -135,10 +135,10 @@ export default function ContactSection({
                 </p>
 
                 <a
-                  href="tel:+250788000000"
+                  href="tel:+250788282693"
                   className="mt-2 inline-block text-base text-[#2D2925] transition hover:text-[#D4AF37]"
                 >
-                  +250 788 000 000
+                  +250 788 282 693
                 </a>
               </div>
 
@@ -150,6 +150,34 @@ export default function ContactSection({
                 <p className="mt-2 text-base text-[#2D2925]">
                   Kigali, Rwanda
                 </p>
+              </div>
+
+              <div className="rounded-[1.5rem] border border-[#E7D9C7] bg-white/70 p-5">
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37]">
+                  Start your inquiry
+                </p>
+
+                <p className="mt-3 text-sm leading-7 text-[#5F554C]">
+                  Share your vision and we will guide you from the first idea to the final styling details.
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <a
+                    href="https://wa.me/250788282693?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20services"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex border border-[#D4AF37] bg-[#D4AF37] px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] text-black transition hover:bg-transparent hover:text-[#D4AF37]"
+                  >
+                    WhatsApp now
+                  </a>
+
+                  <Link
+                    href="/booking"
+                    className="inline-flex border border-[#D9CDBA] px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] text-[#171717] transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                  >
+                    Book a consult
+                  </Link>
+                </div>
               </div>
             </div>
 
