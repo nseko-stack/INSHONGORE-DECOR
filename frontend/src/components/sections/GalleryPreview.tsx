@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { galleryItems as fallbackGalleryItems } from "@/src/content/siteContent";
+import {
+  groupGalleryItems,
+} from "@/src/lib/gallery";
 
 type GalleryItem = {
   id: number;
@@ -67,7 +70,7 @@ export default function GalleryPreview({
     fetchGallery();
   }, []);
 
-  const previewItems = galleryItems.slice(0, 4);
+  const galleryGroups = groupGalleryItems(galleryItems);
 
   return (
     <section
@@ -90,18 +93,6 @@ export default function GalleryPreview({
             </h2>
           </div>
 
-          {galleryItems.length > 4 && (
-            <Link
-              href="/gallery"
-              className={
-                isDark
-                  ? "inline-block border border-white/15 px-6 py-3 text-xs uppercase tracking-[0.2em] text-white transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
-                  : "inline-block border border-[#D4AF37]/60 px-6 py-3 text-xs uppercase tracking-[0.2em] text-[#171717] transition hover:border-[#D4AF37] hover:text-[#D4AF37]"
-              }
-            >
-              View More
-            </Link>
-          )}
         </div>
 
         {loading ? (
@@ -117,39 +108,43 @@ export default function GalleryPreview({
               />
             ))}
           </div>
-        ) : previewItems.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {previewItems.map((item) => (
-              <div
-                key={item.id}
+        ) : galleryGroups.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {galleryGroups.map((group) => (
+              <Link
+                key={group.category}
+                href={`/gallery?category=${encodeURIComponent(group.category)}`}
                 className={
                   isDark
-                    ? "group overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#171717]"
-                    : "group overflow-hidden rounded-[1.5rem] border border-[#E7DCCE] bg-[#F8F5F1]"
+                    ? "group overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#171717] transition hover:-translate-y-1"
+                    : "group overflow-hidden rounded-[1.5rem] border border-[#E7DCCE] bg-[#F8F5F1] transition hover:-translate-y-1"
                 }
               >
-                <div className="relative h-80 overflow-hidden">
+                <div className="relative h-64 overflow-hidden sm:h-72">
                   <Image
-                    src={item.image_url}
-                    alt={item.title}
+                    src={group.items[0].image_url}
+                    alt={`${group.category} category`}
                     fill
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition duration-700 group-hover:scale-105"
                   />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 text-white">
+                    <div>
+                      <h3 className="text-2xl font-medium">
+                        {group.category}
+                      </h3>
+                      <p className="mt-2 text-xs text-white/75">
+                        {group.items.length}{" "}
+                        {group.items.length === 1 ? "photo" : "photos"}
+                      </p>
+                    </div>
+                    <span className="shrink-0 border border-white/70 px-3 py-2 text-[9px] uppercase tracking-[0.15em] transition group-hover:border-[#D4AF37] group-hover:text-[#D4AF37]">
+                      Open folder
+                    </span>
+                  </div>
                 </div>
-
-                <div className="p-5">
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#D4AF37]">
-                    {item.category ?? "Featured"}
-                  </p>
-
-                  <h3 className="mt-3 text-xl font-medium text-current">
-                    {item.title}
-                  </h3>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
@@ -163,4 +158,3 @@ export default function GalleryPreview({
     </section>
   );
 }
-
