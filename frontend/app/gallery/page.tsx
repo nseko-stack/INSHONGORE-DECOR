@@ -16,7 +16,55 @@ interface GalleryItem {
   updated_at: string;
 }
 
+interface GalleryGroup {
+  category: string;
+  items: GalleryItem[];
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const CATEGORY_ORDER = [
+  "Wedding",
+  "Birthday",
+  "Corporate",
+  "Traditional",
+  "Other",
+];
+
+function groupGalleryItems(items: GalleryItem[]): GalleryGroup[] {
+  const groups = new Map<string, GalleryGroup>();
+
+  for (const item of items) {
+    const category = item.category?.trim() || "Other";
+    const knownCategory = CATEGORY_ORDER.find(
+      (known) => known.toLowerCase() === category.toLowerCase()
+    );
+    const displayCategory = knownCategory ?? category;
+    const key = displayCategory.toLowerCase();
+    const group = groups.get(key);
+
+    if (group) {
+      group.items.push(item);
+    } else {
+      groups.set(key, {
+        category: displayCategory,
+        items: [item],
+      });
+    }
+  }
+
+  return [...groups.values()].sort((a, b) => {
+    const aOrder = CATEGORY_ORDER.indexOf(a.category);
+    const bOrder = CATEGORY_ORDER.indexOf(b.category);
+
+    if (aOrder !== -1 || bOrder !== -1) {
+      if (aOrder === -1) return 1;
+      if (bOrder === -1) return -1;
+      return aOrder - bOrder;
+    }
+
+    return a.category.localeCompare(b.category);
+  });
+}
 
 export default function GalleryPage() {
   const [gallery, setGallery] = useState<
@@ -28,6 +76,8 @@ export default function GalleryPage() {
 
   const [error, setError] =
     useState("");
+
+  const galleryGroups = groupGalleryItems(gallery);
 
   useEffect(() => {
     async function fetchGallery() {
@@ -121,50 +171,57 @@ export default function GalleryPage() {
         {/* Gallery */}
         {!loading &&
           !error &&
-          gallery.length > 0 && (
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {gallery.map((item) => (
-                <article
-                  key={item.id}
-                  className="group overflow-hidden rounded-[1.75rem] border border-[#EADFCB] bg-white shadow-sm"
-                >
-                  {/* Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#EADFCB]">
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
-
-                    {/* Featured */}
-                    {item.is_featured && (
-                      <div className="absolute left-4 top-4 rounded-full border border-[#D4AF37]/50 bg-black/70 px-3 py-1.5 backdrop-blur-sm">
-                        <span className="text-[9px] uppercase tracking-[0.16em] text-[#D4AF37]">
-                          Featured
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    {item.category && (
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37]">
-                        {item.category}
-                      </p>
-                    )}
-
-                    <h2 className="mt-2 text-xl font-medium text-[#171717]">
-                      {item.title}
+          galleryGroups.length > 0 && (
+            <div className="mt-12 space-y-16">
+              {galleryGroups.map((group) => (
+                <section key={group.category}>
+                  <div className="mb-6 flex items-end justify-between border-b border-[#EADFCB] pb-4">
+                    <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">
+                      {group.category}
                     </h2>
-
-                    {item.description && (
-                      <p className="mt-3 text-sm leading-7 text-[#4D443D]">
-                        {item.description}
-                      </p>
-                    )}
+                    <p className="text-xs uppercase tracking-[0.18em] text-[#4D443D]/70">
+                      {group.items.length}{" "}
+                      {group.items.length === 1 ? "project" : "projects"}
+                    </p>
                   </div>
-                </article>
+
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {group.items.map((item) => (
+                      <article
+                        key={item.id}
+                        className="group overflow-hidden rounded-[1.75rem] border border-[#EADFCB] bg-white shadow-sm"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden bg-[#EADFCB]">
+                          <img
+                            src={item.image_url}
+                            alt={item.title}
+                            className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                          />
+
+                          {item.is_featured && (
+                            <div className="absolute left-4 top-4 rounded-full border border-[#D4AF37]/50 bg-black/70 px-3 py-1.5 backdrop-blur-sm">
+                              <span className="text-[9px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                                Featured
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="p-6">
+                          <h3 className="text-xl font-medium text-[#171717]">
+                            {item.title}
+                          </h3>
+
+                          {item.description && (
+                            <p className="mt-3 text-sm leading-7 text-[#4D443D]">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
           )}
@@ -193,4 +250,3 @@ export default function GalleryPage() {
     </main>
   );
 }
-
