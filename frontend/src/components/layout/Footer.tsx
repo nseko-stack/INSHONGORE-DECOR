@@ -96,7 +96,7 @@ export default function Footer({ isDark = false }: FooterProps) {
               <WhatsAppIcon />
             </a>
             <a
-              href="https://www.instagram.com/inshongoredecor/"
+              href="https://www.instagram.com/inshongore_decor/"
               target="_blank"
               rel="noreferrer"
               aria-label="Follow us on Instagram"
