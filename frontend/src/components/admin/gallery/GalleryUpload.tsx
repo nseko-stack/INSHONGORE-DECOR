@@ -17,6 +17,71 @@ interface GalleryUploadProps {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
+function getResponseMessage(data: unknown): string | undefined {
+  if (
+    typeof data === "object" &&
+    data !== null &&
+    "message" in data &&
+    typeof data.message === "string"
+  ) {
+    return data.message;
+  }
+
+  return undefined;
+}
+
+function sendGalleryRequest(
+  url: string,
+  method: "POST" | "PATCH",
+  formData: FormData,
+  onProgress: (progress: number) => void
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+
+    request.open(method, url);
+    request.withCredentials = true;
+
+    request.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        onProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    });
+
+    request.addEventListener("load", () => {
+      let data: unknown;
+
+      try {
+        data = JSON.parse(request.responseText);
+      } catch {
+        reject(new Error("The server returned an invalid response."));
+        return;
+      }
+
+      if (request.status < 200 || request.status >= 300) {
+        reject(
+          new Error(
+            getResponseMessage(data) ?? "Failed to save gallery image"
+          )
+        );
+        return;
+      }
+
+      resolve();
+    });
+
+    request.addEventListener("error", () => {
+      reject(new Error("Network error while uploading the image."));
+    });
+
+    request.addEventListener("abort", () => {
+      reject(new Error("Image upload was canceled."));
+    });
+
+    request.send(formData);
+  });
+}
+
 export default function GalleryUpload({
   item,
   onClose,
@@ -42,6 +107,9 @@ export default function GalleryUpload({
 
   const [loading, setLoading] =
     useState(false);
+
+  const [uploadProgress, setUploadProgress] =
+    useState<number | null>(null);
 
   const [error, setError] =
     useState("");
@@ -106,8 +174,7 @@ export default function GalleryUpload({
     try {
       setLoading(true);
       setError("");
-
-      let response: Response;
+      setUploadProgress(file ? 0 : null);
 
       if (item) {
         const formData = new FormData();
@@ -121,36 +188,28 @@ export default function GalleryUpload({
           formData.append("image", file);
         }
 
-        response = await fetch(`${API_URL}/api/gallery/${item.id}`, {
-          method: "PATCH",
-          credentials: "include",
-          body: formData,
-        });
+        await sendGalleryRequest(
+          `${API_URL}/api/gallery/${item.id}`,
+          "PATCH",
+          formData,
+          setUploadProgress
+        );
       } else {
         const formData = new FormData();
-        formData.append("image", file!);
+        if (!file) {
+          throw new Error("Please select an image.");
+        }
+        formData.append("image", file);
         formData.append("title", title.trim());
         formData.append("description", description.trim());
         formData.append("category", category);
         formData.append("is_featured", String(isFeatured));
 
-        response = await fetch(
+        await sendGalleryRequest(
           `${API_URL}/api/gallery`,
-          {
-            method: "POST",
-            credentials: "include",
-            body: formData,
-          }
-        );
-      }
-
-      const data =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ??
-            "Failed to upload image"
+          "POST",
+          formData,
+          setUploadProgress
         );
       }
 
@@ -177,6 +236,7 @@ export default function GalleryUpload({
       );
     } finally {
       setLoading(false);
+      setUploadProgress(null);
     }
   }
 
@@ -222,6 +282,38 @@ export default function GalleryUpload({
                 <p className="text-xs text-red-400">
                   {error}
                 </p>
+              </div>
+            )}
+
+            {uploadProgress !== null && (
+              <div
+                className="border border-white/10 bg-white/[0.03] px-4 py-3"
+                role="status"
+                aria-live="polite"
+              >
+                <div className="mb-2 flex items-center justify-between text-xs">
+                  <span className="text-white/70">
+                    {uploadProgress === 100
+                      ? "Finishing upload..."
+                      : "Uploading image..."}
+                  </span>
+                  <span className="tabular-nums text-[#D4AF37]">
+                    {uploadProgress}%
+                  </span>
+                </div>
+                <div
+                  className="h-2 overflow-hidden rounded-full bg-white/10"
+                  role="progressbar"
+                  aria-label="Image upload progress"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={uploadProgress}
+                >
+                  <div
+                    className="h-full rounded-full bg-[#D4AF37] transition-[width] duration-200"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
               </div>
             )}
 
@@ -427,7 +519,9 @@ export default function GalleryUpload({
                 className="flex-1 border border-[#D4AF37] bg-[#D4AF37] px-4 py-3 text-xs uppercase tracking-[0.16em] text-black transition hover:bg-transparent hover:text-[#D4AF37] disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/10 disabled:text-white/30"
               >
                 {loading
-                  ? "Uploading..."
+                  ? file
+                    ? "Uploading..."
+                    : "Saving..."
                   : item
                     ? "Save Changes"
                     : "Upload Image"}

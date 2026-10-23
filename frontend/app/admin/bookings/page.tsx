@@ -8,6 +8,7 @@ import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
 import BookingTable from "@/src/components/admin/bookings/BookingTable";
 import BookingDetails from "@/src/components/admin/bookings/BookingDetails";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 type BookingStatus =
   | "Pending"
@@ -401,10 +402,8 @@ export default function BookingsPage() {
 
           {/* Loading */}
           {loading ? (
-            <div className="border border-white/10 bg-[#111111] p-10 text-center">
-              <p className="text-sm text-white/40">
-                Loading bookings...
-              </p>
+            <div className="border border-white/10 bg-[#111111] p-10">
+              <LoadingIndicator label="Loading bookings..." />
             </div>
           ) : (
             <BookingTable
@@ -428,4 +427,3 @@ export default function BookingsPage() {
     </div>
   );
 }
-

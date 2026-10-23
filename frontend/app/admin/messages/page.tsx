@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -505,9 +506,9 @@ export default function MessagesPage() {
                       <tr>
                         <td
                           colSpan={5}
-                          className="px-5 py-12 text-center text-sm text-white/30"
+                          className="px-5 py-12"
                         >
-                          Loading messages...
+                          <LoadingIndicator label="Loading messages..." />
                         </td>
                       </tr>
                     ) : filteredMessages.length ===
@@ -815,4 +816,3 @@ function DetailItem({
     </div>
   );
 }
-

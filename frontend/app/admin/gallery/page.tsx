@@ -6,6 +6,7 @@ import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
 import GalleryGrid from "@/src/components/admin/gallery/GalleryGrid";
 import GalleryUpload from "@/src/components/admin/gallery/GalleryUpload";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 interface ApiGalleryItem {
   id: number;
@@ -276,10 +277,8 @@ export default function AdminGalleryPage() {
 
           {/* GALLERY */}
           {loading ? (
-            <div className="border border-white/10 bg-[#111111] px-6 py-16 text-center">
-              <p className="text-sm text-white/50">
-                Loading gallery...
-              </p>
+            <div className="border border-white/10 bg-[#111111] px-6 py-16">
+              <LoadingIndicator label="Loading gallery..." />
             </div>
           ) : (
             <GalleryGrid

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import WhatsAppIcon from "@/src/components/ui/WhatsAppIcon";
+import InstagramIcon from "@/src/components/ui/InstagramIcon";
 
 type FooterProps = {
   isDark?: boolean;
@@ -82,14 +84,28 @@ export default function Footer({ isDark = false }: FooterProps) {
           <p className={`mt-4 text-sm leading-6 ${theme.muted}`}>
             Follow our latest work and get in touch about your event.
           </p>
-          <a
-            href="https://wa.me/250788282693?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20services"
-            target="_blank"
-            rel="noreferrer"
-            className={`mt-4 inline-flex border border-[#D4AF37]/50 px-4 py-2 text-xs uppercase tracking-[0.14em] transition hover:border-[#D4AF37] hover:text-[#D4AF37] ${theme.link}`}
-          >
-            WhatsApp
-          </a>
+          <div className="mt-4 flex gap-3">
+            <a
+              href="https://wa.me/250788282693?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20services"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Chat with us on WhatsApp"
+              title="Chat with us on WhatsApp"
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#25D366]/60 text-[#25D366] transition hover:border-[#25D366] hover:bg-[#25D366] hover:text-white ${theme.link}`}
+            >
+              <WhatsAppIcon />
+            </a>
+            <a
+              href="https://www.instagram.com/inshongoredecor/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Follow us on Instagram"
+              title="Follow us on Instagram"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#E1306C]/60 text-[#E1306C] transition hover:border-[#E1306C] hover:bg-[#E1306C] hover:text-white"
+            >
+              <InstagramIcon />
+            </a>
+          </div>
         </div>
       </div>
 

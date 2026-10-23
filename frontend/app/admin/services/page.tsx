@@ -7,6 +7,7 @@ import AdminHeader from "@/src/components/admin/AdminHeader";
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
 import ServiceTable from "@/src/components/admin/services/ServiceTable";
 import ServiceForm from "@/src/components/admin/services/ServiceForm";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -191,13 +192,7 @@ export default function AdminServicesPage() {
    * Loading state.
    */
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0A0A0A] text-white">
-        <p className="text-xs uppercase tracking-[0.2em] text-white/50">
-          Loading services...
-        </p>
-      </div>
-    );
+    return <LoadingIndicator label="Loading services..." fullScreen />;
   }
 
   return (
@@ -312,4 +307,3 @@ export default function AdminServicesPage() {
     </div>
   );
 }
-

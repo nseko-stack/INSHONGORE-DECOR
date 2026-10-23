@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AdminSidebar from "@/src/components/admin/AdminSidebar";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -141,13 +142,7 @@ export default function AdminDashboardPage() {
    * Loading screen.
    */
   if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0A0A0A] text-white">
-        <p className="text-xs uppercase tracking-[0.2em] text-white/50">
-          Loading dashboard...
-        </p>
-      </main>
-    );
+    return <LoadingIndicator label="Loading dashboard..." fullScreen />;
   }
 
   /*
@@ -408,4 +403,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

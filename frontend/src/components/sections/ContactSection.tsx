@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import WhatsAppIcon from "@/src/components/ui/WhatsAppIcon";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
@@ -166,9 +167,11 @@ export default function ContactSection({
                     href="https://wa.me/250788282693?text=Hello%2C%20I%20would%20like%20to%20inquire%20about%20your%20services"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex border border-[#D4AF37] bg-[#D4AF37] px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] text-black transition hover:bg-transparent hover:text-[#D4AF37]"
+                    aria-label="Chat with us on WhatsApp"
+                    className="inline-flex items-center gap-2 border border-[#25D366] bg-[#25D366] px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] text-black transition hover:bg-transparent hover:text-[#25D366]"
                   >
-                    WhatsApp now
+                    <WhatsAppIcon />
+                    Chat now
                   </a>
 
                   <Link
@@ -335,4 +338,3 @@ export default function ContactSection({
     </section>
   );
 }
-

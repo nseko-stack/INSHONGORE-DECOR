@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import LoadingIndicator from "@/src/components/ui/LoadingIndicator";
 
 type Service = {
   id: number;
@@ -250,6 +251,12 @@ export default function BookingPage() {
                       </option>
                     ))}
                 </select>
+                {loadingServices && (
+                  <LoadingIndicator
+                    label="Loading services..."
+                    className="mt-3 justify-start text-xs"
+                  />
+                )}
               </label>
             </div>
 
@@ -313,4 +320,3 @@ export default function BookingPage() {
     </main>
   );
 }
-
